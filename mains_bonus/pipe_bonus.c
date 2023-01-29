@@ -6,7 +6,7 @@
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/07 11:32:36 by seungjki          #+#    #+#             */
-/*   Updated: 2023/01/27 18:11:49 by seungjki         ###   ########.fr       */
+/*   Updated: 2023/01/29 15:49:29 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	closing_duping(int zero, int one, t_pipex *p)
 		if (dup2(p->fd[one], STDOUT_FILENO) == -1)
 			error_message1(dup_failed);
 	if (zero == 1)
-		if (dup2(p->fd[one], STDIN_FILENO == -1))
+		if (dup2(p->fd[one], STDIN_FILENO) == -1)
 			error_message1(dup_failed);
 	close(p->fd[one]);
 }
