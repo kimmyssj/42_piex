@@ -6,26 +6,32 @@
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/07 11:32:36 by seungjki          #+#    #+#             */
-/*   Updated: 2023/01/27 14:34:10 by seungjki         ###   ########.fr       */
+/*   Updated: 2023/01/29 16:13:02 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
+void	pipe_fork(t_pipex *p)
+{
+	if (pipe(p->fd) == -1)
+		error_message(pipe_failed);
+	p->pid = fork();
+	if (p->pid == -1)
+		error_message(fork_failed);
+}
+
 void	inside_pipex(t_c c, char **env, int idx, int infilefd)
 {
 	t_pipex	p;
 
-	if (pipe(p.fd) == -1)
-		error_message(pipe_failed);
-	p.pid = fork();
-	if (p.pid == -1)
-		error_message(fork_failed);
-	else if (p.pid == 0)
+	pipe_fork(&p);
+	if (p.pid == 0)
 	{
 		close(p.fd[0]);
 		if (idx != 3)
-			dup2(p.fd[1], STDOUT_FILENO);
+			if (dup2(p.fd[1], STDOUT_FILENO) == -1)
+				error_message1(dup_failed);
 		close(p.fd[1]);
 		if (infilefd == -1)
 			exit(0);
@@ -34,7 +40,8 @@ void	inside_pipex(t_c c, char **env, int idx, int infilefd)
 	else
 	{
 		close(p.fd[1]);
-		dup2(p.fd[0], STDIN_FILENO);
+		if (dup2(p.fd[0], STDIN_FILENO) == -1)
+			error_message1(dup_failed);
 		close(p.fd[0]);
 	}
 }
