@@ -6,7 +6,7 @@
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 06:09:13 by seungjki          #+#    #+#             */
-/*   Updated: 2023/01/26 13:35:53 by seungjki         ###   ########.fr       */
+/*   Updated: 2023/02/06 00:28:28 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ enum e_error_message
 	too_few_args,
 	buff_exist,
 	dup_failed,
-	unlink_failed
+	unlink_failed,
+	outfile
 };
 
 enum e_fd
@@ -57,13 +58,6 @@ typedef struct s_hd
 	int		idx;
 }	t_hd;
 
-typedef struct s_pipex
-{
-	int		fd[2];
-	int		*status;
-	pid_t	pid;
-}	t_pipex;
-
 typedef struct s_struct
 {
 	int		idx;
@@ -82,12 +76,22 @@ typedef struct s_c
 	int		flag;
 }	t_c;
 
+typedef struct s_pipex
+{
+	int		fd[2];
+	int		*status;
+	pid_t	pid;
+	t_c		c;
+}	t_pipex;
+
 int		ft_strncmp1(const char *s1, const char *s2, size_t n);
 int		ft_strlen(char *str);
 int		indexof(char *str, char c);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
-char	**give_paths(char *env[]);
-char	**make_comm(char **paths, char *argv[], int argc, int flag);
+int		simillar_strchr(const char *s, char c);
+char	*simmlilar_strdup(const char *s1, int ftschr);
+char	**give_paths(char *env[], t_c c);
+char	**make_comm(char **paths, char *argv[], int argc, t_c c);
 char	*ft_itoa(int n);
 char	*ft_strdup(const char *s1);
 char	*get_next_line(int fd);
@@ -95,8 +99,8 @@ char	*ft_strjoin(char *s1, char *s2);
 char	**ft_split_slash(char *s, char c);
 char	**ft_split(char *s, char c);
 void	pipex(t_c c, char **env, char **argv);
-void	error_message(int flag);
-void	error_message1(int flag);
+void	error_message(int flag, char *name);
+void	error_message1(int flag, char *name);
 void	free_all(t_c *c);
 
 #endif

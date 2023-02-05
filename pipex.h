@@ -6,7 +6,7 @@
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 06:09:13 by seungjki          #+#    #+#             */
-/*   Updated: 2023/01/27 14:04:34 by seungjki         ###   ########.fr       */
+/*   Updated: 2023/02/03 18:29:10 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ enum e_error_message
 	fork_failed,
 	open_failed,
 	open1_failed,
-	dup_failed
+	dup_failed,
+	execve_failed
 };
 
 enum e_fd
@@ -44,14 +45,6 @@ typedef struct s_pipex
 	pid_t	pid;
 }	t_pipex;
 
-typedef struct s_struct
-{
-	int		idx;
-	int		idx1;
-	int		idx2;
-	char	**answer;
-}	t_struct;
-
 typedef struct s_c
 {
 	char	**com_path;
@@ -59,16 +52,21 @@ typedef struct s_c
 	char	**paths;
 	int		infilefd;
 	int		outfilefd;
+	int		flag;
 }	t_c;
 
 size_t	ft_strlen(char *str);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strjoin(char *s1, char *s2);
+char	*ft_strdup(const char *s1);
+char	*simmlilar_strdup(const char *s1, int ftschr);
 char	**ft_split_slash(char *s, char c);
 char	**ft_split(char *s, char c);
 void	pipex(t_c c, char **env);
 void	error_message(int flag);
 void	error_message1(int flag);
-void	free_all(t_c c);
+void	free_all(t_c *c);
+int		open_file(char **argv, int flag, int argc);
+int		simillar_strchr(const char *s, char c);
 
 #endif

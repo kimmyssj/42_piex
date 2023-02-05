@@ -6,7 +6,7 @@
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 15:07:44 by seungjki          #+#    #+#             */
-/*   Updated: 2023/01/27 14:42:58 by seungjki         ###   ########.fr       */
+/*   Updated: 2023/02/05 03:01:11 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,83 +19,73 @@ char	**give_paths(char *env[])
 
 	idx = 0;
 	while (ft_strncmp("PATH=", env[idx], 5) != 0)
-			idx ++;
+	{
+		idx ++;
+		if (env[idx] == NULL)
+			return (NULL);
+	}
 	paths = ft_split_slash(env[idx] + 5, ':');
 	if (paths == 0)
 		error_message(malloc_failed);
 	return (paths);
 }
 
-void	initialize(t_struct *i, int argc)
+char	*make_comm(char **paths, char *argv)
 {
-	i->answer = malloc(sizeof(char *) * (argc - 1));
-	if (i->answer == 0)
-		error_message(malloc_failed);
-	i->answer[argc - 1] = NULL;
-	i->idx = 1;
-	i->idx2 = 0;
-}
+	int		idx;
+	char	*answer;
 
-char	**make_comm(char **paths, char *argv[], int argc)
-{
-	t_struct	i;
-
-	initialize(&i, argc);
-	while (argv[++i.idx + 1] != NULL)
+	idx = -1;
+	while (paths != NULL && paths[++idx] != NULL)
 	{
-		i.idx1 = -1;
-		while (paths[++i.idx1 + 1] != NULL)
-		{
-			i.answer[i.idx2] = ft_strjoin(paths[i.idx1], argv[i.idx]);
-			if (i.answer[i.idx2] == NULL)
-				error_message(malloc_failed);
-			if (access(i.answer[i.idx2], F_OK) == 0)
-				break ;
-			free(i.answer[i.idx2]);
-			i.answer[i.idx2] = NULL;
-		}
-		if (paths[i.idx1] == NULL || i.answer[i.idx2] == NULL)
-			error_message(not_a_valid_argument);
-		i.idx2 ++;
-	}
-	return (i.answer);
-}
-
-int	open_file(char **argv, int flag, int argc)
-{
-	int	answer;
-
-	if (flag == infile)
-	{
-		answer = open(argv[1], O_RDONLY);
-		if (answer == -1)
-		{
-			error_message1(open1_failed);
+		answer = ft_strjoin(paths[idx], argv);
+		if (answer == NULL)
+			error_message(malloc_failed);
+		if (access(answer, X_OK) == 0)
 			return (answer);
-		}
+		free(answer);
 	}
-	else
-	{
-		answer = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0777);
-		if (answer == -1)
-			error_message1(open_failed);
-	}
+	answer = ft_strdup(argv);
+	if (answer == NULL)
+		error_message(malloc_failed);
+	return (answer);
+}
+
+char	*for_abs_path(char *abs_path)
+{
+	char	*answer;
+
+	answer = simmlilar_strdup(rel_path, simillar_strchr(rel_path, ' '));
+	if (answer == NULL)
+		error_message(malloc_failed);
 	return (answer);
 }
 
 int	main(int argc, char *argv[], char *env[])
 {
 	t_c		c;
+	int		idx;
 
+	idx = -1;
 	if (argc != 5)
 		error_message(not_match_args);
 	c.paths = give_paths(env);
-	c.com_path = make_comm(c.paths, argv, argc);
+	c.com_path = malloc(sizeof(char *) * 3);
+	if (c.com_path == NULL)
+		error_message(malloc_failed);
+	c.com_path[2] = NULL;
+	while (++idx < 2)
+	{
+		if (argv[idx + 2][0] != '/' && c.paths != NULL)
+			c.com_path[idx] = make_comm(c.paths, argv[idx + 2]);
+		else
+			c.com_path[idx] = for_abs_path(argv[idx + 2]);
+		if (c.com_path[idx] == NULL)
+			error_message(malloc_failed);
+	}
 	c.argv = argv;
 	c.infilefd = open_file(argv, infile, argc);
 	c.outfilefd = open_file(argv, outfile, argc);
 	pipex(c, env);
-	free_all(c);
-	free(c.paths);
-	free(c.com_path);
+	free_all(&c);
 }

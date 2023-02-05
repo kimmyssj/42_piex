@@ -6,7 +6,7 @@
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/29 09:01:30 by seungjki          #+#    #+#             */
-/*   Updated: 2023/01/26 16:05:11 by seungjki         ###   ########.fr       */
+/*   Updated: 2023/02/01 19:31:58 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ void	error_message1(int flag)
 		perror("dup2 failed");
 		exit(0);
 	}
+	else if (flag == execve_failed)
+	{
+		perror("execve failed");
+		exit(0);
+	}
 }
 
 void	error_message(int flag)
@@ -41,10 +46,7 @@ void	error_message(int flag)
 		exit(0);
 	}
 	else if (flag == not_a_valid_argument)
-	{
 		perror("Not a valid argument");
-		exit(0);
-	}
 	else if (flag == pipe_failed)
 	{
 		perror("Pipe failed");

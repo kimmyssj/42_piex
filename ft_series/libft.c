@@ -6,7 +6,7 @@
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/11 15:06:18 by seungjki          #+#    #+#             */
-/*   Updated: 2023/01/05 20:50:02 by seungjki         ###   ########.fr       */
+/*   Updated: 2023/01/30 08:25:58 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,23 @@ int	ft_strncmp(const char *s1, const char *s2, size_t n)
 	if (idx == n)
 		return (0);
 	return ((unsigned char)s1[idx] - (unsigned char)s2[idx]);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	int		idx;
+	char	*result;
+
+	idx = 0;
+	while (s1[idx])
+		idx ++;
+	result = (char *)malloc(sizeof(char) * idx + 1);
+	if (result == NULL)
+		return (NULL);
+	while (idx != -1)
+	{
+		result[idx] = s1[idx];
+		idx --;
+	}
+	return (result);
 }

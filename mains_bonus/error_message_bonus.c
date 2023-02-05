@@ -6,14 +6,23 @@
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/29 09:01:30 by seungjki          #+#    #+#             */
-/*   Updated: 2023/01/27 15:56:37 by seungjki         ###   ########.fr       */
+/*   Updated: 2023/02/06 00:25:38 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex_bonus.h"
 
-void	error_message1(int flag)
+void	unlinkit(char *name)
 {
+	if (unlink(name) == -1)
+		perror("Unlink failed");
+	exit(1);
+}
+
+void	error_message1(int flag, char *name)
+{
+	if (flag != unlink_failed && name != NULL)
+		unlinkit(name);
 	if (flag == open_failed)
 	{
 		perror("Open failed");
@@ -21,20 +30,27 @@ void	error_message1(int flag)
 	}
 	else if (flag == open1_failed)
 		perror("Open failed");
-	else if (flag == buff_exist)
-	{
-		perror("File buff exist, Delete or change the file name");
-		exit(1);
-	}
 	else if (flag == dup_failed)
 	{
 		perror("Failed dup2");
 		exit(1);
 	}
+	else if (flag == fork_failed)
+	{
+		perror("Fork failed");
+		exit(1);
+	}
+	else
+	{
+		perror("Unlink failed");
+		exit(1);
+	}
 }
 
-void	error_message(int flag)
+void	error_message(int flag, char *name)
 {
+	if (name != NULL)
+		unlinkit(name);
 	if (flag == not_match_args)
 	{
 		perror("Not match args");
@@ -50,14 +66,9 @@ void	error_message(int flag)
 		perror("Not a valid argument");
 		exit(1);
 	}
-	else if (flag == pipe_failed)
+	else
 	{
 		perror("Pipe failed");
-		exit(1);
-	}
-	else if (flag == fork_failed)
-	{
-		perror("Fork failed");
 		exit(1);
 	}
 }

@@ -1,36 +1,45 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_all.c                                         :+:      :+:    :+:   */
+/*   libft1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/26 17:54:46 by seungjki          #+#    #+#             */
-/*   Updated: 2023/02/01 19:48:05 by seungjki         ###   ########.fr       */
+/*   Created: 2023/02/03 18:12:40 by seungjki          #+#    #+#             */
+/*   Updated: 2023/02/05 02:53:08 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	free_double_array(char **array)
+int	simillar_strchr(const char *s, char c)
 {
 	int	idx;
 
 	idx = 0;
-	while (array[idx])
+	while (s[idx])
 	{
-		free(array[idx]);
-		idx ++;
+		if (s[idx] == c)
+			return (idx);
+		idx++;
 	}
+	return (idx);
 }
 
-void	free_all(t_c *c)
+char	*simmlilar_strdup(const char *s1, int ftschr)
 {
-	free_double_array(c->com_path);
-	free(c->com_path);
-	if (c->paths != NULL)
+	int		idx;
+	char	*result;
+
+	idx = 0;
+	result = (char *)malloc(sizeof(char) * ftschr + 1);
+	if (result == NULL)
+		return (NULL);
+	while (idx < ftschr)
 	{
-		free_double_array(c->paths);
-		free(c->paths);
+		result[idx] = s1[idx];
+		idx ++;
 	}
+	result[ftschr] = '\0';
+	return (result);
 }

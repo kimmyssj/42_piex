@@ -1,36 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_all.c                                         :+:      :+:    :+:   */
+/*   file_opener.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: seungjki <seungjki@student.42seoul.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/26 17:54:46 by seungjki          #+#    #+#             */
-/*   Updated: 2023/02/01 19:48:05 by seungjki         ###   ########.fr       */
+/*   Created: 2023/01/29 23:00:08 by seungjki          #+#    #+#             */
+/*   Updated: 2023/02/05 03:00:21 by seungjki         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../pipex.h"
 
-void	free_double_array(char **array)
+int	open_file(char **argv, int flag, int argc)
 {
-	int	idx;
+	int	answer;
 
-	idx = 0;
-	while (array[idx])
+	if (flag == infile)
 	{
-		free(array[idx]);
-		idx ++;
+		answer = open(argv[1], O_RDONLY);
+		if (answer == -1)
+		{
+			error_message1(open1_failed);
+			return (answer);
+		}
 	}
-}
-
-void	free_all(t_c *c)
-{
-	free_double_array(c->com_path);
-	free(c->com_path);
-	if (c->paths != NULL)
+	else
 	{
-		free_double_array(c->paths);
-		free(c->paths);
+		answer = open(argv[argc - 1], O_WRONLY | O_TRUNC | O_CREAT, 0777);
+		if (answer == -1)
+			error_message1(open_failed);
 	}
+	return (answer);
 }
